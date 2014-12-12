@@ -13,5 +13,5 @@ public interface Environment {
     public void setActiveTerminal (Terminal t);
     public Terminal getOrCreateTerminal (int broj);
     public Terminal[] listTerminals();
-    public Iterable commands();
+    public Iterable<ShellCommand> commands();
 }

@@ -1,5 +1,7 @@
 package hr.fer.oop.lab3.topic1;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Spliterator;
@@ -9,7 +11,7 @@ import java.util.function.Consumer;
  * Created by borna on 07/12/14.
  */
 
-public class SimpleHashTable implements Iterable {
+public class SimpleHashTable implements Iterable<SimpleHashTable.TableEntry> {
 
     private TableEntry[] table;
     private int size;
@@ -313,7 +315,7 @@ public class SimpleHashTable implements Iterable {
      */
 
     @Override
-    public Iterator iterator() {
+    public Iterator<TableEntry> iterator() {
         return new SimpleHashTableIterator();
     }
 
@@ -402,7 +404,7 @@ public class SimpleHashTable implements Iterable {
         }
     }
 
-    public class SimpleHashTableIterator implements Iterator{
+    public class SimpleHashTableIterator implements Iterator<TableEntry>{
 
         TableEntry current = null;
         int length = table.length;
@@ -437,8 +439,7 @@ public class SimpleHashTable implements Iterable {
          * @throws NoSuchElementException if the iteration has no more elements
          */
         @Override
-        public Object next() throws NoSuchElementException {
-
+        public TableEntry next() throws NoSuchElementException {
             if (current == null) {
                 return firstAvailableTableEntry();
             }
@@ -476,4 +477,3 @@ public class SimpleHashTable implements Iterable {
         }
     }
 }
-

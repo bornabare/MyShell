@@ -5,6 +5,7 @@ import hr.fer.oop.lab3.topic1.commands.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
 
 /**
  * Created by borna on 07/12/14.
@@ -12,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 public class MyShell {
 
     private static SimpleHashTable commands;
+    private static Environment environment = new EnvironmentImpl();
 
     static {
         commands = new SimpleHashTable();
@@ -47,7 +49,7 @@ public class MyShell {
             return reader.readLine();
         }
 
-        public void write (String string) throws IOException {
+        public void write(String string) throws IOException {
             writer.write(string);
             writer.flush();
         }
@@ -55,11 +57,11 @@ public class MyShell {
         public void writeln(String string) throws IOException {
 //            writer.write(string+"\n");
 //            writer.flush();
-            this.write(string+"\n");
+            this.write(string + "\n");
 
         }
 
-        public Terminal getActiveTerminal () {
+        public Terminal getActiveTerminal() {
             return activeTerminal;
         }
 
@@ -69,20 +71,16 @@ public class MyShell {
         }
 
         /**
-         *
-         * @param number
-         * if Terminal exist, return value from SimplehashTable.TableEntry which is reference to itself
-         * else if terminal does not exist, create new Terminal, put given number as key, and reference to itself as value
+         * @param number if Terminal exist, return value from SimplehashTable.TableEntry which is reference to itself
+         *               else if terminal does not exist, create new Terminal, put given number as key, and reference to itself as value
          * @return Terminal
          */
 
-        public Terminal getOrCreateTerminal (int number) {
+        public Terminal getOrCreateTerminal(int number) {
 
-            if (terminals.containsKey(number)){
-                    return (Terminal) terminals.get(number);
-            }
-
-            else {
+            if (terminals.containsKey(number)) {
+                return (Terminal) terminals.get(number);
+            } else {
                 Terminal createdTerminal = new Terminal(number);
                 terminals.put(number, createdTerminal);
                 return createdTerminal;
@@ -103,13 +101,31 @@ public class MyShell {
             return array;
         }
 
-        public Iterable commands(){         //moze ovako ali bez genericsa ide. Vraca iterable koji generiraju TableEntryije, a commands mora vratiti Iterable objekt koji vracaju objekte ShellCommand
-            return commands;
+        public Iterable<ShellCommand> commands() {
+
+            return new Iterable<ShellCommand>() {
+
+                @Override
+                public Iterator<ShellCommand> iterator() {
+
+                    return new Iterator<ShellCommand>() {
+
+                        Iterator<SimpleHashTable.TableEntry> i = commands.iterator();
+
+                        @Override
+                        public boolean hasNext() {
+                            return i.hasNext();
+                        }
+
+                        @Override
+                        public ShellCommand next() {
+                            return (ShellCommand) i.next().getValue();
+                        }
+                    };
+                }
+            };
         }
-
     }
-
-    private static Environment environment = new EnvironmentImpl();
 
     public static void main(String[] args) throws IOException{
 
@@ -130,7 +146,11 @@ public class MyShell {
             for (int i = 1; i < argsLen; i++){
                 arg = arg.concat(lineSplit[i]).concat(" ");
             }
-            arg = arg.substring(0,arg.length()-1);
+            try {
+                arg = arg.substring(0,arg.length()-1);
+            } catch (StringIndexOutOfBoundsException e) {
+                e.getMessage();
+            }
 
             try {
                 shellCommand = (ShellCommand) commands.get(cmd);

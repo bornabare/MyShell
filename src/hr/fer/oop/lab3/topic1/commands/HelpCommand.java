@@ -27,10 +27,10 @@ public class HelpCommand extends AbstractCommand {
     @Override
     public CommandStatus execute(Environment environment, String argument) throws IOException {
 
-        for (Object commandObject : environment.commands()) {
+        for (ShellCommand command : environment.commands()) {
 
-            SimpleHashTable.TableEntry commandTableEntry = (SimpleHashTable.TableEntry) commandObject;
-            ShellCommand command = (ShellCommand) commandTableEntry.getValue();
+//            SimpleHashTable.TableEntry commandTableEntry = (SimpleHashTable.TableEntry) commandObject;
+//            ShellCommand command = (ShellCommand) commandTableEntry.getValue();
             environment.writeln(command.getCommandName()+" => "+command.getCommandDescription());
         }
         return CommandStatus.CONTINUE;
