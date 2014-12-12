@@ -1,8 +1,8 @@
-This is simple text file that we wanted to show how it can be printed ou so everyone can see it. We are going with no problem to another line, like you can see.
+This is simple text file that we wanted to show how it can be printed you so everyone can see it. We are going with no problem to another line, like you can see.
 Just like this…
 
 or like this.
 
-Se you next time,
+See you next time,
 
-			Friend, Borna 
+			Friend, Borna

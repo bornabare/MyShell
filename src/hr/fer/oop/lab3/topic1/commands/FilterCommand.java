@@ -19,8 +19,6 @@ public class FilterCommand extends AbstractCommand {
 
 
 
-
-
         return CommandStatus.CONTINUE;
     }
 }
