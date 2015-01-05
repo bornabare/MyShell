@@ -17,7 +17,7 @@ public class SimpleHashTableMain {
         System.out.println("Ocjena = " + grade);
     }
 
-    for(SimpleHashTable.TableEntry<String,Integer> pair : exams) {
+    for (SimpleHashTable.TableEntry<String,Integer> pair : exams) {
         System.out.println("(Ime, Ocjena) = (" + pair.getKey()+", "+pair.getValue()+")");
     }
 }

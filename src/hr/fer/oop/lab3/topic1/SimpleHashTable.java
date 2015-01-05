@@ -1,5 +1,6 @@
 package hr.fer.oop.lab3.topic1;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Spliterator;
@@ -14,7 +15,7 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
 
 //    private TableEntry[] table;
     private int size;
-    private ArrayList<TableEntry<K,V>> table;
+    private ArrayList<TableEntry> table;
 
     /**
      * first constructor with no arguments; table with 16 slots
@@ -23,11 +24,7 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
 //        table[16] = new TableEntry(null, null, n=ull);
 //    }
 
-        this.table = new ArrayList<SimpleHashTable.TableEntry<K,V>>(16);
-
-        for (int i=0; i<16 ; i++){
-            table[i] = null;
-        }
+        this.table = new ArrayList<SimpleHashTable.TableEntry>(16);
 
         this.size = 0;
     }
@@ -51,16 +48,13 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
         }
 
         System.out.println("Final capacity equals: "+i);
-        table = new ArrayList<TableEntry<K,V>>(i);
+        table = new ArrayList<TableEntry>(i);
+
         // now i is the next number that is exponent of 2
 //        for (int j = 0; j < i; j++){
 //            table[j] = new TableEntry(null, null, null);
 //            table = new TableEntry[j];
 //        }
-
-        for (int j=0; j<i ; j++){
-            table[j] = null;
-        }
     }
 
     /**
@@ -108,7 +102,7 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
         int slot = slotNumber(key);
 
         if (containsKey(key)){          //case No2 when entry is already in slot
-            TableEntry entry = table[slot];
+            TableEntry entry = table.get(slot);
             for (; entry != null; entry = entry.next){
                 if ( keyEqual(key, entry) ) {
                     entry.setValue(newValue);
@@ -123,11 +117,11 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
             TableEntry newEntry = new TableEntry(key, newValue, null);
 
 
-            if (table[slot] == null) {
-                table[slot] = newEntry;
+            if (table.get(slot) == null) {
+                table.set(slot, newEntry);
 
             } else {
-                TableEntry currentEntry = table[slot];
+                TableEntry currentEntry = table.get(slot);
 
                 while (currentEntry.next != null) {
                     currentEntry = currentEntry.next;
@@ -172,7 +166,7 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
      */
     public V get(K key){ //return value
         int slot = slotNumber(key);
-        TableEntry currentEntry = table[slot];
+        TableEntry currentEntry = table.get(slot);
 
         for (; currentEntry != null; currentEntry = currentEntry.next) {
             if (keyEqual(key, currentEntry)) {
@@ -188,14 +182,14 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
      * @return slot number of a given key by using hashCode method
      * @exception throw java.lang.IllegalArgumentException if key is empty String because hashCode() can't be performed
      */
-    public int slotNumber (Object key){
+    public int slotNumber (K key){
         if (key == null){
             throw new IllegalArgumentException("Can't create slot number with null key\n");
         }
         if (key == ""){
             throw new IllegalArgumentException("Can't create slot number without appropriate key\n");
         }
-        return Math.abs( key.hashCode() ) % table.length;
+        return Math.abs( key.hashCode() ) % table.size();
     }
 
     /**
@@ -212,7 +206,7 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
      * @return boolean true if key exists in calculated slot number
      * @exception throw java.lang.IllegalArgumentException if key empty string, NullPointerException is called on its own.
      */
-    public boolean containsKey(Object key){ //go through only one slot!!!! and return true if key exists in the right slot
+    public boolean containsKey(K key){ //go through only one slot!!!! and return true if key exists in the right slot
 
         if (key == null){
             throw new IllegalArgumentException("Not able to search for null key");
@@ -223,7 +217,7 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
         }
 
         int slot = slotNumber(key);
-        TableEntry currentEntry = table[slot];
+        TableEntry currentEntry = table.get(slot);
 
         while (currentEntry != null){
             if ( keyEqual(key, currentEntry) )
@@ -238,13 +232,13 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
      * @param value
      * @return boolean value saying whether value given in parameter exists anywhere in the SimpleHashtable instance
      */
-    public boolean containsValue(Object value){ //go through all slots and return true if value exists
+    public boolean containsValue(V value){ //go through all slots and return true if value exists
         TableEntry currentEntry;
-        int tableLength = table.length;
+        int tableLength = table.size();
 
         for (int i = 0; i < tableLength; i++){
 
-            currentEntry = table[i];
+            currentEntry = table.get(i);
 
             while (currentEntry != null){
                 if (valueEqual(value, currentEntry))
@@ -261,10 +255,10 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
      * Remove object with the given key value
      * @exception throw java.lang.IllegalArgumentException if non-existing key value wants to be removed
      */
-    public void remove(Object key){
+    public void remove(K key){
         int slot = slotNumber(key);
 
-        TableEntry beforeEntry = table[slot];
+        TableEntry beforeEntry = table.get(slot);
         TableEntry currentEntry = beforeEntry.next;
         size--;
 
@@ -302,10 +296,10 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
     public String toString(){
         StringBuilder sb = new StringBuilder();
         sb.append("SimpleHashtable:\n").append("Size: "+size()+"\n");
-        int sizeTableEntryArray = table.length;
+        int sizeTableEntryArray = table.size();
 
         for (int i = 0; i < sizeTableEntryArray; i++) {
-            TableEntry currentEntry = table[i];
+            TableEntry currentEntry = table.get(i);
 
             for (; currentEntry != null; currentEntry = currentEntry.next) {
                 sb.append("Slot["+i+"]\n").append(currentEntry.toString());
@@ -327,11 +321,13 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
 
     }
     public Iterable<TableEntry<V>> values() {
+
+
     }
 
     @Override
-    public Iterator<TableEntry> iterator() {
-        return new TableEntryIterator();
+    public Iterator iterator() {
+        return new SimpleHashTableIterator();
     }
 
     /**
@@ -422,10 +418,10 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
     /**
      * TableEntryIterator is class that is implemented Iterator on TableEntries,
      */
-    public class TableEntryIterator implements Iterator<TableEntry<K,V>>{
+    public class SimpleHashTableIterator implements Iterator<TableEntry<K,V>>{
 
         TableEntry current = null;
-        int length = table.length;
+        int length = table.size();
 
         /**
          * Returns {@code true} if the iteration has more elements.
@@ -473,8 +469,8 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
 
                     while (i < length) {
 
-                        if (table[i] != null){
-                            return current = table[i];
+                        if (table.get(slot) != null){
+                            return current = table.get(i);
                         }
 
                         i++;
@@ -493,8 +489,8 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
         public TableEntry firstAvailableTableEntry() throws NoSuchElementException {
 
             for (int i=0 ; i < length; i++){
-                if (table[i] != null) {
-                    return current = table[i];
+                if (table.get(i) != null) {
+                    return current = table.get(i);
                 }
             }
             throw new NoSuchElementException("No ANY TableEntries");
