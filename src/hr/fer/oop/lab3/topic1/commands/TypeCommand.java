@@ -4,7 +4,6 @@ import hr.fer.oop.lab3.topic1.shell.CommandStatus;
 import hr.fer.oop.lab3.topic1.shell.Environment;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;

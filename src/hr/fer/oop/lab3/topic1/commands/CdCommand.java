@@ -10,6 +10,9 @@ import java.nio.file.Paths;
 
 /**
  * Created by borna on 07/12/14.
+ *
+ * @version 1.0
+ * @author borna
  */
 public class CdCommand extends AbstractCommand {
     public CdCommand() {
@@ -17,6 +20,10 @@ public class CdCommand extends AbstractCommand {
     }
 
     /**
+     *  Cd Command either moves up current directory to the parent directory or enters available directory present in current directory,
+     *  or eneters directory given by correct absolute path
+     *
+     *
      *  1st check if it is relative path then absolute path!!! for example in MyShell write src can cause problems otherwise!!
      *
      * @param environment

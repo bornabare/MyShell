@@ -11,7 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * This is command that copies file given by first command line argument to destination given either
+ * by the name of still unexistent destination folder that will be created (so parent has to exist),
+ * or by the existing directory - in that case name of the file remains exact like in src.
+ *
  * Created by borna on 09/12/14.
+ *
+ * @version 1.0
+ * @author borna
  */
 
 public class CopyCommand extends AbstractCommand{
@@ -41,7 +48,7 @@ public class CopyCommand extends AbstractCommand{
         Path destFilePath = Paths.get(staza[1]);
 
 
-        //parent is not file!
+        //srcFile is not file! It has to be file in order to be copied
         if (Files.isDirectory(srcFilePath)) {
             environment.writeln("Wrong type of arguments");
             return CommandStatus.CONTINUE;
@@ -69,6 +76,7 @@ public class CopyCommand extends AbstractCommand{
             }
 
         } catch (IOException e) {
+            e.getMessage();
         } finally {
             br.close();
         }

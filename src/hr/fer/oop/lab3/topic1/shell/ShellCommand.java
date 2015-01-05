@@ -4,6 +4,9 @@ import java.io.IOException;
 
 /**
  * Created by borna on 07/12/14.
+ *
+ * @version 1.0
+ * @author borna
  */
 public interface ShellCommand {
     public String getCommandName();

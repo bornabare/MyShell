@@ -7,6 +7,9 @@ import java.nio.file.Paths;
 
 /**
  * Created by borna on 07/12/14.
+ *
+ * @version 1.0
+ * @author borna
  */
 public class Terminal {
 

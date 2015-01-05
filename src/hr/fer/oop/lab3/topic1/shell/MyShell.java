@@ -8,7 +8,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 
 /**
+ * Main class for running
+ *
  * Created by borna on 07/12/14.
+ *
+ * @version 1.0
+ * @author borna
+ *
  */
 public class MyShell {
 
@@ -33,6 +39,14 @@ public class MyShell {
         }
 
     }
+
+    /**
+     * This is class that is implementing the environment created in order to produce Shell
+     * That includes needed terminals, operation with them, as well as commands.
+     *
+     * Terminals and commands are structured in SimpleHashTable, which gives them nice feature
+     * to be get next elements easily
+     */
 
     public static class EnvironmentImpl implements Environment {
 
@@ -101,7 +115,13 @@ public class MyShell {
             return array;
         }
 
+        /**
+         *
+         * @return
+         */
+
         public Iterable<ShellCommand> commands() {
+//            return commands;      // Iterable commands originalno
 
             return new Iterable<ShellCommand>() {
 
@@ -129,11 +149,11 @@ public class MyShell {
 
     public static void main(String[] args) throws IOException{
 
-
         environment.writeln("Welcome to MyShell! You may enter commands.");
         CommandStatus status = CommandStatus.CONTINUE;
         ShellCommand shellCommand;
 
+        //this is loop that doesn't end until current operation returns CommandStatus.EXIT (only quit for now)
         while (status != CommandStatus.EXIT) {
 
             environment.write(getPromt()); //implement writing Term No., $ and current path
@@ -165,12 +185,17 @@ public class MyShell {
                 continue;
             }
             else {
-                status = shellCommand.execute(environment, arg);
+                status = shellCommand.execute(environment, arg);        //executing the given command
             }
         }
 
         environment.writeln("Thank you for using this shell. Goodbye!");
     }
+
+    /**
+     *
+     * @return string that will currently be written on prompt (screen)
+     */
     public static String getPromt(){
         String string = Integer.toString(environment.getActiveTerminal().getId())+"$"+ environment.getActiveTerminal().getCurrentPath().toString()+" ";
         return string;

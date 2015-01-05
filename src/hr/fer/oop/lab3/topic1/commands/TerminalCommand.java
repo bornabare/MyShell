@@ -27,9 +27,14 @@ public class TerminalCommand extends AbstractCommand {
     @Override
     public CommandStatus execute(Environment environment, String argument) throws IOException {
 
-        Terminal wantedTerminal = environment.getOrCreateTerminal(Integer.parseInt(argument));
-        environment.writeln("Changed current terminal to "+argument);
-        environment.setActiveTerminal(wantedTerminal);
+        try{
+            Terminal wantedTerminal = environment.getOrCreateTerminal(Integer.parseInt(argument));
+            environment.writeln("Changed current terminal to "+argument);
+            environment.setActiveTerminal(wantedTerminal);
+        } catch (NumberFormatException e){
+            e.getMessage();
+            environment.writeln("Illegal number (" + argument + ") format!");
+        }
 
         return CommandStatus.CONTINUE;
     }

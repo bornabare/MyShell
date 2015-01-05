@@ -79,7 +79,7 @@ public class XCopyCommand extends AbstractCommand {
             if ( f.isDirectory() ) {
                 String[] srcArray = f.toString().split(root.getName());         //split whole root to get trimmed srcPath (just last directory)
                 String trimSrc = srcArray[srcArray.length-1];
-                new File(destPathString+trimSrc).mkdir();
+                new File (destPathString+trimSrc).mkdir();
                 recursiveWalk(f.getAbsolutePath(), destPathString+trimSrc, environment);
             }
             else if (f.isFile()){              //f.isFile() so COPY it!!
