@@ -31,7 +31,8 @@ public class MyShell {
             new FilterCommand(),
             new TypeCommand(),
             new CopyCommand(),
-            new XCopyCommand()
+            new XCopyCommand(),
+            new DirCommand()
         };
 
         for (ShellCommand c : cc) {

@@ -18,16 +18,18 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
     private ArrayList<TableEntry<K,V>> table;
 
     /**
-     * first constructor with no arguments; table wi
-     * th 16 slots
+     * first constructor with no arguments; table with 16 slots
      */
     public SimpleHashTable() {
 //        table[16] = new TableEntry(null, null, n=ull);
 //    }
 
-        this.table = new ArrayList<SimpleHashTable.TableEntry<K,V>>(16);
-
+        this.table = new ArrayList<SimpleHashTable.TableEntry<K,V>>();
         this.size = 0;
+
+        for (int i = 0; i<16; i++){
+            table.add(i, null);
+        }
     }
 
     /**
@@ -51,6 +53,7 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
         System.out.println("Final capacity equals: "+i);
         table = new ArrayList<SimpleHashTable.TableEntry<K,V>>(i);
 
+
         // now i is the next number that is exponent of 2
 //        for (int j = 0; j < i; j++){
 //            table[j] = new TableEntry(null, null, null);
@@ -65,7 +68,7 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
      *
      * for example i=32 returns true, i=128 true, i=333 returns false
      */
-    private boolean isNotExpenentOf2(int i) {
+    public boolean isNotExpenentOf2(int i) {
         for (; i != 2; i=i/2) {
             if (i % 2 != 0)
                 return true;
@@ -131,8 +134,6 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
             }
             size += 1;
         }
-
-
     }
 
     /**
@@ -309,16 +310,13 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
         return sb.toString();
     }
 
-
-
-
     /**
      * Returns an iterator over elements of type {@code T}.
      *
      * @return an Iterator.
      */
 
-    public Iterable <K> keys() {
+    public Iterable<K> keys() {
         return new Iterable<K>() {
             @Override
             public Iterator<K> iterator() {
@@ -460,7 +458,7 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
     }
 
     /**
-     * TableEntryIterator is class that is implemented Iterator on TableEntries,
+     * SimpleHashTableIterator is class that is implemented Iterator on TableEntries<K,V>,
      */
     public class SimpleHashTableIterator implements Iterator<TableEntry<K,V>>{
 
@@ -514,7 +512,6 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
                         if (table.get(i) != null){
                             return current = table.get(i);
                         }
-
                         i++;
                     }
                     throw new NoSuchElementException("No more TableEntries");
@@ -532,5 +529,4 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
             throw new NoSuchElementException("No ANY TableEntries");
         }
     }
-
 }
