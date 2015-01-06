@@ -11,20 +11,21 @@ import java.util.function.Consumer;
  * Created by borna on 07/12/14.
  */
 
-public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry> {
+public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry<K,V>> {
 
 //    private TableEntry[] table;
     private int size;
-    private ArrayList<TableEntry> table;
+    private ArrayList<TableEntry<K,V>> table;
 
     /**
-     * first constructor with no arguments; table with 16 slots
+     * first constructor with no arguments; table wi
+     * th 16 slots
      */
     public SimpleHashTable() {
 //        table[16] = new TableEntry(null, null, n=ull);
 //    }
 
-        this.table = new ArrayList<SimpleHashTable.TableEntry>(16);
+        this.table = new ArrayList<SimpleHashTable.TableEntry<K,V>>(16);
 
         this.size = 0;
     }
@@ -48,7 +49,7 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
         }
 
         System.out.println("Final capacity equals: "+i);
-        table = new ArrayList<TableEntry>(i);
+        table = new ArrayList<SimpleHashTable.TableEntry<K,V>>(i);
 
         // now i is the next number that is exponent of 2
 //        for (int j = 0; j < i; j++){
@@ -161,12 +162,12 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
     /**
      *
      * @param key user input, name
-     * @return Object with the key parameter
+     * @return Object value with the key parameter
      * @exception java.lang.IllegalArgumentException if wanted key does not exist
      */
     public V get(K key){ //return value
         int slot = slotNumber(key);
-        TableEntry currentEntry = table.get(slot);
+        TableEntry<K,V> currentEntry = table.get(slot);
 
         for (; currentEntry != null; currentEntry = currentEntry.next) {
             if (keyEqual(key, currentEntry)) {
@@ -317,18 +318,61 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
      * @return an Iterator.
      */
 
-    public Iterable<TableEntry<K>> keys() {
+    public Iterable <K> keys() {
+        return new Iterable<K>() {
+            @Override
+            public Iterator<K> iterator() {
+                return new Iterator<K>() {
 
+                    private Iterator<SimpleHashTable.TableEntry<K,V>> keyIterator = new SimpleHashTableIterator();
+                    @Override
+                    public boolean hasNext() {
+                        return keyIterator.hasNext();
+                    }
+
+                    @Override
+                    public K next() {
+                        if (keyIterator.hasNext()) {
+                            return keyIterator.next().getKey();
+                        }
+                        throw new NoSuchElementException();
+                    }
+                };
+            }
+        };
     }
-    public Iterable<TableEntry<V>> values() {
+    public Iterable<V> values() {
+        return new Iterable<V>() {
+            @Override
+            public Iterator<V> iterator() {
+                return new Iterator<V>() {
+
+                    private Iterator<SimpleHashTable.TableEntry<K,V>> valueIterator= new SimpleHashTableIterator();
+                    @Override
+                    public boolean hasNext() {
+                        return valueIterator.hasNext();
+                    }
+
+                    @Override
+                    public V next() {
+                        if (valueIterator.hasNext()){
+                            return valueIterator.next().getValue();
+                        }
+
+                        throw new NoSuchElementException();
+                    }
+                };
+            }
+        };
 
 
     }
 
     @Override
-    public Iterator iterator() {
+    public Iterator<SimpleHashTable.TableEntry<K,V>> iterator() {
         return new SimpleHashTableIterator();
     }
+
 
     /**
      * Performs the given action for each element of the {@code Iterable}
@@ -377,10 +421,10 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
     /**
      * Nested class from SimpleHashTable
      */
-    public class TableEntry {
+    public static class TableEntry<K,V> {
         private K key;
         private V value;
-        private TableEntry next;
+        private TableEntry<K,V> next;
 
         public TableEntry(K key, V value, TableEntry next) {
             this.key = key;
@@ -420,7 +464,7 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
      */
     public class SimpleHashTableIterator implements Iterator<TableEntry<K,V>>{
 
-        TableEntry current = null;
+        TableEntry<K,V> current = null;
         int length = table.size();
 
         /**
@@ -432,28 +476,26 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
          */
         @Override
         public boolean hasNext() {
-//            if (this.next() != null)
-//                return true;
-//            return false;
-            TableEntry saveEntry = current;
+            TableEntry<K,V> saveEntry = current;
             try {
                 next();
             } catch (NoSuchElementException ex) {
                 ex.getMessage();
                 return false;
             }
-            current=saveEntry;
+            current = saveEntry;
             return true;
         }
-
         /**
          * Returns the next element in the iteration.
          *
          * @return the next element in the iteration //it is TableEntry
          * @throws NoSuchElementException if the iteration has no more elements
          */
+
         @Override
-        public TableEntry next() throws NoSuchElementException {
+        public TableEntry<K, V> next() {
+
             if (current == null) {
                 return firstAvailableTableEntry();
             }
@@ -469,24 +511,18 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
 
                     while (i < length) {
 
-                        if (table.get(slot) != null){
+                        if (table.get(i) != null){
                             return current = table.get(i);
                         }
 
                         i++;
                     }
                     throw new NoSuchElementException("No more TableEntries");
-
                 }
             }
         }
 
-        /**
-         * searches for first TableEntry in each slot
-         * @return
-         * @throws NoSuchElementException
-         */
-        public TableEntry firstAvailableTableEntry() throws NoSuchElementException {
+        public TableEntry<K,V> firstAvailableTableEntry() throws NoSuchElementException {
 
             for (int i=0 ; i < length; i++){
                 if (table.get(i) != null) {
@@ -496,4 +532,5 @@ public class SimpleHashTable<K,V> implements Iterable<SimpleHashTable.TableEntry
             throw new NoSuchElementException("No ANY TableEntries");
         }
     }
+
 }

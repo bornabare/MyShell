@@ -4,12 +4,18 @@ package hr.fer.oop.lab3.topic1;
  * Created by borna on 1/5/15.
  */
 public class SimpleHashTableMain {
-    SimpleHashTable<String,Integer> exams = new SimpleHashTable<>();
+
+    SimpleHashTable<String,Integer> exams = new SimpleHashTable<String,Integer>();
+
+    SimpleHashTable<String,Integer> test = new SimpleHashTable<>(16);
+
+
+
     exams.put ("Ivana", Integer.valueOf(5));
     exams.put ("Janko", Integer.valueOf(4));
 
 
-    for(String name : exams.keys()) {
+    for (String name : exams.keys()) {
         System.out.println("Ime = " + name);
     }
 
